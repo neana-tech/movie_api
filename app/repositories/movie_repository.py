@@ -4,7 +4,9 @@ class MovieRepository:
     @staticmethod
     def get_all():
         db = get_db()
-        movies = db.execute('SELECT * FROM movies').fetchall()
+        with db.cursor() as cursor:
+            cursor.execute('SELECT * FROM movies')
+            movies = cursor.fetchall()
         return [dict(movie) for movie in movies] # python list comprehension
         #my_results = []
         #for movie in movies:
@@ -15,28 +17,33 @@ class MovieRepository:
     def get_by_id(movie_id):
         db = get_db()
         # parametrized sql statements protect us from SQL injection attacks
-        movie = db.execute('SELECT * FROM movies WHERE id = ?', (movie_id, )).fetchone()
+        with db.cursor as cursor:
+            cursor.execute('SELECT * FROM movies WHERE id = %s', (movie_id, ))
+            movie = cursor.fetchone()
         return dict(movie) if movie else None
 
     @staticmethod
     def add(data):
         db = get_db()
-        db.execute('INSERT INTO movies (title) VALUES (?)', (data['title'],))
-        db.commit()
+        with db.cursor() as cursor:
+            cursor.execute('INSERT INTO movies (title) VALUES (%s)', (data['title'],))
+            db.commit()
         return {'message':'movie added'}
 
     @staticmethod
     def update(movie_id, data):
         db = get_db()
-        db.execute('UPDATE movies SET title = ? WHERE id = ?', (data['title'], movie_id))
-        db.commit()
+        with db.cursor() as cursor:
+            cursor.execute('UPDATE movies SET title = %s WHERE id = %s', (data['title'], movie_id))
+            db.commit()
         return {'message':'movie updated'}
 
     @staticmethod
     def delete(movie_id):
         db = get_db()
-        db.execute('DELETE FROM movies WHERE id = ?', (movie_id,))
-        db.commit()
+        with db.cursor() as cursor:
+            cursor.execute('DELETE FROM movies WHERE id = %s', (movie_id,))
+            db.commit()
         return {'message':'movie deleted'}
 
 
