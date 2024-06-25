@@ -22,3 +22,6 @@ class MovieService:
     def delete_movie(movie_id):
         return MovieRepository.delete(movie_id)
 
+    @staticmethod
+    def delete_movies():
+        return MovieRepository.delete_all()

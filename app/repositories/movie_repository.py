@@ -47,5 +47,12 @@ class MovieRepository:
             db.commit()
         return {'message':'movie deleted'}
 
-
+    @staticmethod
+    def delete_all():
+        db = get_db()
+        with db.cursor() as cursor:
+            cursor.execute('DELETE FROM reviews')
+            cursor.execute('DELETE FROM movies')
+            db.commit()
+        return {'message':'all movies deleted'}
 
