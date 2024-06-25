@@ -25,3 +25,6 @@ def update_movie(id):
 def delete_movie(id):
     return jsonify(MovieService.delete_movie(id))
 
+@movies_bp.route('/movies', methods=['DELETE'])
+def delete_movies():
+    return jsonify(MovieService.delete_movies())
