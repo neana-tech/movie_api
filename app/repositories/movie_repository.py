@@ -42,6 +42,7 @@ class MovieRepository:
     def delete(movie_id):
         db = get_db()
         with db.cursor() as cursor:
+            cursor.execute('DELETE FROM reviews WHERE movie_id = %s', (movie_id,))
             cursor.execute('DELETE FROM movies WHERE id = %s', (movie_id,))
             db.commit()
         return {'message':'movie deleted'}
