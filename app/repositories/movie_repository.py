@@ -25,10 +25,12 @@ class MovieRepository:
     @staticmethod
     def add(data):
         db = get_db()
+        inserted_row = {}
         with db.cursor() as cursor:
-            cursor.execute('INSERT INTO movies (title) VALUES (%s)', (data['title'],))
+            cursor.execute('INSERT INTO movies (title) VALUES (%s) RETURNING *;', (data['title'],))
+            inserted_row = cursor.fetchone()
             db.commit()
-        return {'message':'movie added'}
+        return dict(inserted_row) if inserted_row else None
 
     @staticmethod
     def update(movie_id, data):
